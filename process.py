@@ -17,6 +17,7 @@ def make_csv(max_amp):
             fieldnames = ["time", "amp"]
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             time_now = datetime.now()
+            #df['time'] = pd.Series([val.time() for val in df['time']])
             current_time = time_now.strftime("%H:%M:%S")
             writer.writeheader()
             writer.writerow({"time": current_time, "amp": max_amp})
@@ -24,7 +25,8 @@ def make_csv(max_amp):
         with open(todays_data_path, "a") as csv_file:
             fieldnames = ["time", "amp"]
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            time_now = datetime.now()
+            time_now = datetime.now()        
+            #df['time'] = pd.Series([val.time() for val in time])
             current_time = time_now.strftime("%H:%M:%S")
             writer.writerow({"time": current_time, "amp": max_amp})
 
@@ -52,7 +54,7 @@ def plot_csv():
 
 
 def main():
-    i = 5
+    i = 300
     while i > 1:
         i -= 1
         record()
