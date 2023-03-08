@@ -8,7 +8,7 @@ import os
 import pathlib
 
 todays_date = date.today()
-todays_data_path = pathlib.Path.cwd() / 'collected_data' / f'{todays_date}.csv'
+todays_data_path = pathlib.Path.cwd() / "collected_data" / f"{todays_date}.csv"
 
 
 def make_csv(max_amp):
@@ -22,11 +22,12 @@ def make_csv(max_amp):
         fieldnames = ["time", "amp"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
         time_now = datetime.now()
-        #df['time'] = pd.Series([val.time() for val in df['time']])
+        # df['time'] = pd.Series([val.time() for val in df['time']])
         current_time = time_now.strftime("%H:%M:%S")
         if not file_exists:
             writer.writeheader()
         writer.writerow({"time": current_time, "amp": max_amp})
+
 
 def concat_csv():
     pass
@@ -43,7 +44,7 @@ def read_csv():
 def plot_csv():
     rate = 44100
     # rate, data = wavfile.read('FILE.wav')
-    
+
     # t = np.arange(len(data[:,0]))*1.0/rate
     # plt.plot(t, data[:,0])
     # plt.show()
@@ -59,6 +60,7 @@ def main():
         max_amp = data.max()
         make_csv(max_amp)
         os.remove("FILE.wav")
+
 
 if __name__ == "__main__":
     main()
