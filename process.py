@@ -27,15 +27,6 @@ def make_csv(max_amp):
         if not file_exists:
             writer.writeheader()
         writer.writerow({"time": current_time, "amp": max_amp})
-"""    else:
-        with open(todays_data_path, "a") as csv_file:
-            fieldnames = ["time", "amp"]
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            time_now = datetime.now()        
-            #df['time'] = pd.Series([val.time() for val in time])
-            current_time = time_now.strftime("%H:%M:%S")
-            writer.writerow({"time": current_time, "amp": max_amp})
-"""
 
 def concat_csv():
     pass
