@@ -7,7 +7,7 @@ import numpy as np
 import datetime
 
 def plot_csv():
-"""Really need to clean this up, make plots from different days load and so on, now it just loads the first file that it finds. Also maybe make the time into a time object whaen constructing the csv if possible. Need more data for testing"""
+    """Really need to clean this up, make plots from different days load and so on, now it just loads the first file that it finds. Also maybe make the time into a time object whaen constructing the csv if possible. Need more data for testing"""
 
     rate = 44100
     file_paths = collected_data_path.glob("**/*")

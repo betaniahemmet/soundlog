@@ -131,3 +131,5 @@ dmypy.json
 # data
 .collected_data
 collected_data
+FILE.wav
+.FILE.wav

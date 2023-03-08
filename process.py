@@ -12,16 +12,22 @@ todays_data_path = pathlib.Path.cwd() / 'collected_data' / f'{todays_date}.csv'
 
 
 def make_csv(max_amp):
-    if not os.path.isfile(todays_data_path):
-        with open(todays_data_path, "a") as csv_file:
-            fieldnames = ["time", "amp"]
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            time_now = datetime.now()
-            #df['time'] = pd.Series([val.time() for val in df['time']])
-            current_time = time_now.strftime("%H:%M:%S")
-            writer.writeheader()
-            writer.writerow({"time": current_time, "amp": max_amp})
+    if os.path.isfile(todays_data_path):
+        file_exists = True
     else:
+        file_exists = False
+
+    print(file_exists)
+    with open(todays_data_path, "a") as csv_file:
+        fieldnames = ["time", "amp"]
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        time_now = datetime.now()
+        #df['time'] = pd.Series([val.time() for val in df['time']])
+        current_time = time_now.strftime("%H:%M:%S")
+        if not file_exists:
+            writer.writeheader()
+        writer.writerow({"time": current_time, "amp": max_amp})
+"""    else:
         with open(todays_data_path, "a") as csv_file:
             fieldnames = ["time", "amp"]
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
@@ -29,7 +35,7 @@ def make_csv(max_amp):
             #df['time'] = pd.Series([val.time() for val in time])
             current_time = time_now.strftime("%H:%M:%S")
             writer.writerow({"time": current_time, "amp": max_amp})
-
+"""
 
 def concat_csv():
     pass
