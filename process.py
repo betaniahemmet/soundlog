@@ -1,11 +1,12 @@
 import scipy.io.wavfile as wavfile
 import numpy as np
 import matplotlib.pyplot as plt
-from audiolog import record
+from soundlog import record
 import csv
 from datetime import datetime, date
 import os
 import pathlib
+import pandas as pd
 
 todays_date = date.today()
 todays_data_path = pathlib.Path.cwd() / "collected_data" / f"{todays_date}.csv"
@@ -17,13 +18,11 @@ def make_csv(max_amp):
     else:
         file_exists = False
 
-    print(file_exists)
     with open(todays_data_path, "a") as csv_file:
         fieldnames = ["time", "amp"]
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        time_now = datetime.now()
-        # df['time'] = pd.Series([val.time() for val in df['time']])
-        current_time = time_now.strftime("%H:%M:%S")
+        current_time = datetime.now()
+        current_time = current_time.time().replace(microsecond=0)
         if not file_exists:
             writer.writeheader()
         writer.writerow({"time": current_time, "amp": max_amp})
@@ -52,7 +51,7 @@ def plot_csv():
 
 
 def main():
-    i = 300
+    i = 100
     while i > 1:
         i -= 1
         record()

@@ -11,7 +11,8 @@ RECORD_SECONDS = 5
 
 
 def record():
-
+    """Record sound for the global secconds at the global rate"""
+    
     with wave.open("FILE.wav", "wb") as wf:
         p = pyaudio.PyAudio()
         wf.setnchannels(CHANNELS)
