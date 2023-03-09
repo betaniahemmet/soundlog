@@ -9,10 +9,14 @@ import pathlib
 import pandas as pd
 
 todays_date = date.today()
-todays_data_path = pathlib.Path.cwd() / "collected_data" / f"{todays_date}.csv"
+this_week = todays_date.isocalendar()[1]
+this_week_path = pathlib.Path.cwd() / "collected_data" / f"{this_week}" # TODO: make paths global
+todays_data_path = pathlib.Path.cwd() / "collected_data" / f"{this_week}" / f"{todays_date}.csv"
 
 
 def make_csv(max_amp):
+    if not os.path.exists(this_week_path):
+        os.makedirs(this_week_path)
     if os.path.isfile(todays_data_path):
         file_exists = True
     else:
@@ -51,7 +55,8 @@ def plot_csv():
 
 
 def main():
-    i = 100
+    i = 2
+    print(todays_data_path)
     while i > 1:
         i -= 1
         record()
