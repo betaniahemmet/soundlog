@@ -1,8 +1,8 @@
 import network
 import socket
-from utime import sleep
+from secret import ssid, password
 from machine import ADC, Pin
-from time import ticks_ms, ticks_add, ticks_diff
+from time import ticks_ms, ticks_add, ticks_diff, sleep
 
 
 #analog_value = machine.ADC(26)
@@ -14,8 +14,6 @@ RANGES = 1 << 16 # Because of the 12-bit ADC of the pico being upsampled to 16 i
 MAX_RES = 65536
 CONV = VREF / RANGES # The resolution of the ADC is roughly 0.8 millivolts
 
-
-samples = []
 
 def ptp():
     """A function to find the peak to peak amplitude of the raw signal"""
@@ -34,6 +32,7 @@ def ptp():
     ptp_amp = max_amp - min_amp
     
     return ptp_amp
+    # TODO: Maybe take several readings and send back the max-value to get a more acurate estimation of the actual noise situation
 
 
 def ptp_to_volts(ptp_amp):
@@ -49,32 +48,84 @@ def value_mapping(volt_reading):
     normalized_volts = volt_reading / VREF
     mapped_value = normalized_volts * 10
     rounded_value = round(mapped_value, 2) # Round value to only two decimals
-    
-    return rounded_value
+    formatted_value = float("{:.2f}".format(rounded_value))
+    return formatted_value
 
-x = 0
-while x < 500:
-    ptp_amp = ptp()
-    volts = ptp_to_volts(ptp_amp)
-    final_value = value_mapping(volts)
-    print(final_value)
-    x += 1
-    
-
-#try:
-#    connect()
-#except KeyboardInterrupt:
-#    machine.reset()
     
 def connect():
     #Connect to WLAN
     wlan = network.WLAN(network.STA_IF)
     wlan.active(True)
-    wlan.connect('Betania', '1234567890!')
+    wlan.connect(ssid, password)
     
     while wlan.isconnected() == False:
         print('Waiting for connection...')
-        sleep(1)
+        sleep(2)
         ip = wlan.ifconfig()[0]
-    print(f'Connected on {ip}')
     return ip
+
+
+def open_socket():
+    # Open socket
+    addr = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
+
+    s = socket.socket()
+    s.bind(addr)
+    s.listen(1)
+    
+    return addr, s
+    
+def listen(final_value, addr, s):
+    
+
+    cl, addr = s.accept()
+    print('client connected from', addr)
+    request = cl.recv(1024)
+    print(request)
+    # Do not unpack request
+    # We reply to any request the same way
+
+
+    
+    response = str(final_value) # This is what we send in reply
+
+    cl.send(response)
+    print("Sent:" + response)
+    cl.close()
+
+
+
+
+fresh_ip = connect()
+print(f'Connected on {fresh_ip}')
+
+
+addr, s = open_socket()
+print(addr, s)
+
+counter = 0 
+max_value = 0
+    
+while True:
+    try:
+        ptp_amp = ptp()
+        volts = ptp_to_volts(ptp_amp)
+        final_value = value_mapping(volts)
+        
+        listen(final_value, addr, s)
+
+    
+    
+    
+    except OSError as e:
+        cl.close()
+        print('connection closed')
+    
+    except KeyboardInterrupt:
+        print("Resetting machine")
+        machine.reset()
+        
+
+
+
+
